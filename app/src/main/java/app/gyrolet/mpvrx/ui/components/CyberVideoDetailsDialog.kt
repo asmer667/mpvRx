@@ -1,8 +1,15 @@
-package app.gyrolet.mpvrx.ui.components // عدل اسم الـ package ليطابق مشروعك إذا كان مختلفاً
+package app.gyrolet.mpvrx.ui.components
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -16,8 +23,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
-import com.app.video.model.VideoItem
-import com.app.video.ui.theme.Cyber3DColors
+import app.gyrolet.mpvrx.ui.theme.Cyber3DColors
 
 @Composable
 fun CyberVideoDetailsDialog(
@@ -33,33 +39,33 @@ fun CyberVideoDetailsDialog(
                 .border(
                     width = 1.dp,
                     brush = Brush.linearGradient(
-                        listOf(Cyber3DColors.CyanNeon, Cyber3DColors.MagentaNeon)
+                        listOf(Cyber3DColors.CyanNeon, Cyber3DColors.MagentaNeon),
                     ),
-                    shape = RoundedCornerShape(24.dp)
+                    shape = RoundedCornerShape(24.dp),
                 )
-                .padding(20.dp)
+                .padding(20.dp),
         ) {
             Column(
                 modifier = Modifier.fillMaxWidth(),
-                verticalArrangement = Arrangement.spacedBy(14.dp)
+                verticalArrangement = Arrangement.spacedBy(14.dp),
             ) {
                 Row(
                     modifier = Modifier.fillMaxWidth(),
                     horizontalArrangement = Arrangement.SpaceBetween,
-                    verticalAlignment = Alignment.CenterVertically
+                    verticalAlignment = Alignment.CenterVertically,
                 ) {
                     Text(
                         text = "تفاصيل الملف الـ HUD",
                         style = MaterialTheme.typography.titleMedium.copy(
                             fontWeight = FontWeight.Black,
-                            fontSize = 16.sp
+                            fontSize = 16.sp,
                         ),
-                        color = Color.White
+                        color = Color.White,
                     )
 
                     CyberHudBadge(
                         text = video.resolution.ifEmpty { "MEDIA" },
-                        accentColor = Cyber3DColors.CyanNeon
+                        accentColor = Cyber3DColors.CyanNeon,
                     )
                 }
 
@@ -75,14 +81,14 @@ fun CyberVideoDetailsDialog(
                 Cyber3DCard(
                     onClick = onDismissRequest,
                     cornerRadius = 12.dp,
-                    modifier = Modifier.align(Alignment.End)
+                    modifier = Modifier.align(Alignment.End),
                 ) {
                     Text(
                         text = "إغلاق",
                         modifier = Modifier.padding(horizontal = 24.dp, vertical = 8.dp),
                         color = Cyber3DColors.CyanNeon,
                         fontWeight = FontWeight.Bold,
-                        fontSize = 13.sp
+                        fontSize = 13.sp,
                     )
                 }
             }
@@ -98,14 +104,14 @@ private fun DetailItemRow(label: String, value: String) {
             style = MaterialTheme.typography.labelSmall,
             color = Cyber3DColors.CyanNeon.copy(alpha = 0.8f),
             fontSize = 10.sp,
-            fontWeight = FontWeight.Bold
+            fontWeight = FontWeight.Bold,
         )
         Spacer(modifier = Modifier.height(2.dp))
         Text(
             text = value,
             style = MaterialTheme.typography.bodySmall,
             color = Color.White.copy(alpha = 0.9f),
-            fontSize = 13.sp
+            fontSize = 13.sp,
         )
     }
 }

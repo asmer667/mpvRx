@@ -1,8 +1,14 @@
-package app.gyrolet.mpvrx.ui.components // عدل اسم الـ package ليطابق مشروعك إذا كان مختلفاً
+package app.gyrolet.mpvrx.ui.components
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.ColumnScope
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ModalBottomSheet
@@ -14,7 +20,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
-import com.app.video.ui.theme.Cyber3DColors
+import app.gyrolet.mpvrx.ui.theme.Cyber3DColors
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -30,7 +36,6 @@ fun CyberBottomSheet(
         containerColor = Color.Transparent,
         scrimColor = Color.Black.copy(alpha = 0.7f),
         dragHandle = {
-            // مقبض السحب بتصميم نيون 3D
             Box(
                 modifier = Modifier
                     .padding(vertical = 12.dp)
@@ -39,11 +44,11 @@ fun CyberBottomSheet(
                     .clip(RoundedCornerShape(2.dp))
                     .background(
                         Brush.horizontalGradient(
-                            listOf(Cyber3DColors.CyanNeon, Cyber3DColors.MagentaNeon)
-                        )
-                    )
+                            listOf(Cyber3DColors.CyanNeon, Cyber3DColors.MagentaNeon),
+                        ),
+                    ),
             )
-        }
+        },
     ) {
         Box(
             modifier = modifier
@@ -53,18 +58,20 @@ fun CyberBottomSheet(
                 .border(
                     width = 1.dp,
                     brush = Brush.verticalGradient(
-                        listOf(Cyber3DColors.CyanNeon.copy(alpha = 0.8f), Color.Transparent)
+                        listOf(
+                            Cyber3DColors.CyanNeon.copy(alpha = 0.8f),
+                            Color.Transparent,
+                        ),
                     ),
-                    shape = RoundedCornerShape(topStart = 28.dp, topEnd = 28.dp)
+                    shape = RoundedCornerShape(topStart = 28.dp, topEnd = 28.dp),
                 )
-                .padding(20.dp)
+                .padding(20.dp),
         ) {
             Column(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalAlignment = Alignment.CenterHorizontally,
-                content = content
-            ) {
-            }
+                content = content,
+            )
         }
     }
 }

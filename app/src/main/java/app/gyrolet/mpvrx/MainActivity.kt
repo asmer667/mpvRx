@@ -64,6 +64,7 @@ import androidx.navigation3.runtime.rememberNavBackStack
 import app.gyrolet.mpvrx.preferences.AppearancePreferences
 import app.gyrolet.mpvrx.preferences.PlayerPreferences
 import app.gyrolet.mpvrx.preferences.preference.collectAsState
+import app.gyrolet.mpvrx.presentation.Dashboard
 import app.gyrolet.mpvrx.presentation.Screen
 import app.gyrolet.mpvrx.presentation.components.ProvideLiquidGlassBackdrop
 import app.gyrolet.mpvrx.presentation.components.captureLiquidGlassBackdrop
@@ -87,13 +88,6 @@ import app.gyrolet.mpvrx.ui.components.CyberBottomSheet
 import app.gyrolet.mpvrx.ui.components.CyberVideoOptionsSheet
 import app.gyrolet.mpvrx.ui.components.CyberVideoDetailsDialog
 import app.gyrolet.mpvrx.ui.components.VideoItem
-
-// ✅ استيراد الشاشات بما فيها الشاشات الجديدة (FolderDetailScreen & MusicScreen)
-import app.gyrolet.mpvrx.ui.screens.DashboardScreen
-import app.gyrolet.mpvrx.ui.screens.FolderDetailScreen
-import app.gyrolet.mpvrx.ui.screens.MusicScreen
-import app.gyrolet.mpvrx.ui.screens.FolderInfo
-import app.gyrolet.mpvrx.ui.screens.*
 
 import app.gyrolet.mpvrx.ui.theme.AppWallpaperHost
 import app.gyrolet.mpvrx.ui.theme.DarkMode
@@ -527,7 +521,8 @@ class MainActivity : AppCompatActivity() {
   @OptIn(ExperimentalMaterial3Api::class)
   @Composable
   fun Navigator() {
-    val backstack = rememberNavBackStack(DashboardScreen)
+    // ✅ التصحيح: استخدام Dashboard بدلاً من DashboardScreen
+    val backstack = rememberNavBackStack(Dashboard)
 
     @Suppress("UNCHECKED_CAST")
     val typedBackstack = backstack as NavBackStack<Screen>
@@ -559,18 +554,6 @@ class MainActivity : AppCompatActivity() {
     var selectedVideoForDetails by remember { mutableStateOf<VideoItem?>(null) }
     val sheetState = rememberModalBottomSheetState()
 
-    // 🌟 حالة التنقل بين الشاشات المضافة حديثاً
-    var activeViewMode by remember { mutableStateOf("dashboard") }
-    var currentSelectedFolder by remember { mutableStateOf<FolderInfo?>(null) }
-
-    val sampleVideos = remember {
-      listOf(
-        VideoItem("1", "الحلقة 01 - بداية المغامرة", "24:15", ""),
-        VideoItem("2", "الحلقة 02 - المواجهة الحاسمة", "23:50", ""),
-        VideoItem("3", "الحلقة 03 - السر المجهول", "25:10", "")
-      )
-    }
-
     CompositionLocalProvider(
       LocalBackStack provides typedBackstack,
     ) {
@@ -578,55 +561,30 @@ class MainActivity : AppCompatActivity() {
 
       LaunchedEffect(hasNavEntries) {
         if (!hasNavEntries) {
-          typedBackstack.add(DashboardScreen)
+          // ✅ التصحيح: استخدام Dashboard
+          typedBackstack.add(Dashboard)
         }
       }
 
       if (hasNavEntries) {
         val miniPlayerBackdrop = rememberLiquidGlassBackdrop()
-        
+
         CyberGlowBackground {
           Box(modifier = Modifier.fillMaxSize()) {
-            when (activeViewMode) {
-              "dashboard" -> {
-                ScreenNavDisplay(
-                  modifier =
-                    Modifier
-                      .fillMaxSize()
-                      .captureLiquidGlassBackdrop(miniPlayerBackdrop, liquidGlassEnabled),
-                  backStack = typedBackstack,
-                  opaqueBackground = typedBackstack.any { it == app.gyrolet.mpvrx.ui.preferences.PreferencesScreen },
-                  onBack = {
-                    if (typedBackstack.size <= 1 || !typedBackstack.popSafely()) {
-                      this@MainActivity.finish()
-                    }
-                  },
-                )
-              }
-
-              "folder_detail" -> {
-                FolderDetailScreen(
-                  folderName = currentSelectedFolder?.name ?: "المجلد الحالي",
-                  videosInFolder = sampleVideos,
-                  getThumbnail = { null },
-                  onVideoClick = { video ->
-                    // يمكنك هنا استدعاء مشغل الفيديو
-                  },
-                  onBackClick = {
-                    activeViewMode = "dashboard"
-                  },
-                  modifier = Modifier.fillMaxSize()
-                )
-              }
-
-              "music" -> {
-                MusicScreen(
-                  currentTrackTitle = "Cyberpunk Synthwave - Track 01",
-                  artistName = "mpvRx Audio Engine",
-                  modifier = Modifier.fillMaxSize()
-                )
-              }
-            }
+            // ✅ التصحيح: استخدام ScreenNavDisplay مباشرة بدون when(activeViewMode)
+            ScreenNavDisplay(
+              modifier =
+                Modifier
+                  .fillMaxSize()
+                  .captureLiquidGlassBackdrop(miniPlayerBackdrop, liquidGlassEnabled),
+              backStack = typedBackstack,
+              opaqueBackground = typedBackstack.any { it == app.gyrolet.mpvrx.ui.preferences.PreferencesScreen },
+              onBack = {
+                if (typedBackstack.size <= 1 || !typedBackstack.popSafely()) {
+                  this@MainActivity.finish()
+                }
+              },
+            )
 
             val miniPlayerConfig = LocalConfiguration.current
             val isPortrait = miniPlayerConfig.orientation == Configuration.ORIENTATION_PORTRAIT

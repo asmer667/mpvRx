@@ -14,7 +14,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.app.video.ui.theme.Cyber3DColors
+import app.gyrolet.mpvrx.ui.theme.Cyber3DColors
 
 @Composable
 fun CyberHudBadge(
