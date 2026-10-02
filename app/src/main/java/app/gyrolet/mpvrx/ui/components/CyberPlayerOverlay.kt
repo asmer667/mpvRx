@@ -12,12 +12,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Pause
-import androidx.compose.material.icons.filled.PlayArrow
-import androidx.compose.material.icons.filled.SkipNext
-import androidx.compose.material.icons.filled.SkipPrevious
-import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Slider
 import androidx.compose.material3.SliderDefaults
@@ -30,6 +24,8 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import app.gyrolet.mpvrx.ui.icons.Icon
+import app.gyrolet.mpvrx.ui.icons.Icons
 import app.gyrolet.mpvrx.ui.theme.Cyber3DColors
 
 @Composable
@@ -83,7 +79,11 @@ fun CyberPlayerOverlay(
                     .clip(CircleShape)
                     .background(Cyber3DColors.DarkGlassSurface),
             ) {
-                Icon(Icons.Default.SkipPrevious, contentDescription = "Prev", tint = Color.White)
+                Icon(
+                    imageVector = Icons.RoundedFilled.SkipPrevious,
+                    contentDescription = "Prev",
+                    tint = Color.White
+                )
             }
 
             Box(
@@ -100,7 +100,7 @@ fun CyberPlayerOverlay(
                 contentAlignment = Alignment.Center,
             ) {
                 Icon(
-                    imageVector = if (isPlaying) Icons.Default.Pause else Icons.Default.PlayArrow,
+                    imageVector = if (isPlaying) Icons.RoundedFilled.Pause else Icons.RoundedFilled.PlayArrow,
                     contentDescription = "Play/Pause",
                     tint = Cyber3DColors.CyanNeon,
                     modifier = Modifier.size(36.dp),
@@ -114,7 +114,11 @@ fun CyberPlayerOverlay(
                     .clip(CircleShape)
                     .background(Cyber3DColors.DarkGlassSurface),
             ) {
-                Icon(Icons.Default.SkipNext, contentDescription = "Next", tint = Color.White)
+                Icon(
+                    imageVector = Icons.RoundedFilled.SkipNext,
+                    contentDescription = "Next",
+                    tint = Color.White
+                )
             }
         }
 

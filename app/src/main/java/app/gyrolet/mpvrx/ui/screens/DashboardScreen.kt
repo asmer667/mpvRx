@@ -13,30 +13,56 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
+import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.*
-import androidx.compose.material.icons.outlined.*
-import androidx.compose.material3.*
-import androidx.compose.runtime.*
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.LinearProgressIndicator
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.blur
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.drawBehind
-import androidx.compose.ui.graphics.*
+import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.NativePaint
+import androidx.compose.ui.graphics.Shape
+import androidx.compose.ui.graphics.StrokeCap
+import androidx.compose.ui.graphics.asComposeRenderEffect
+import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.graphics.drawscope.drawIntoCanvas
+import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
@@ -47,9 +73,10 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.core.content.ContextCompat
 import app.gyrolet.mpvrx.ui.components.VideoItem
+import app.gyrolet.mpvrx.ui.icons.Icon
+import app.gyrolet.mpvrx.ui.icons.Icons
 import java.util.Locale
 
-// جلب مساحة التخزين الفعلية من ذاكرة الجهاز الحقيقية
 fun getRealSystemStorage(): StorageInfo {
     return try {
         val path = Environment.getDataDirectory()
@@ -59,7 +86,7 @@ fun getRealSystemStorage(): StorageInfo {
         val usedBytes = totalBytes - availableBytes
         StorageInfo(usedBytes = usedBytes, totalBytes = totalBytes)
     } catch (e: Exception) {
-        StorageInfo() // Fallback في حال تعذر الوصول
+        StorageInfo()
     }
 }
 
@@ -87,7 +114,6 @@ private object CyberTheme100 {
     val TextSecondary = Color(0xCCFFFFFF)
 }
 
-// ضبابية زجاجية حقيقية تدعم Android 12+ مع إمكانية التوافق السلس
 fun Modifier.realGlassBlur(
     blurRadius: Float = 30f,
     shape: Shape = RoundedCornerShape(18.dp)
@@ -146,8 +172,7 @@ fun DashboardScreen(
     val context = LocalContext.current
     var activeTab by remember { mutableStateOf("home") }
     var selectedCategory by remember { mutableStateOf("الكل") }
-    
-    // قراءة التخزين الحقيقية من الهاتف
+
     val liveStorageInfo = remember { getRealSystemStorage() }
 
     val permissionToRequest = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
@@ -169,7 +194,6 @@ fun DashboardScreen(
     }
 
     Box(modifier = modifier.fillMaxSize().background(CyberTheme100.BackgroundDark)) {
-        // خلفية التوهج الشعاعي النيوني
         Box(
             modifier = Modifier
                 .size(500.dp)
@@ -289,7 +313,6 @@ fun DashboardScreen(
     }
 }
 
-// بطاقة ثلاثية الأبعاد مطلقة ذات عمق طبقي حقيقي (Realistic 3D Card Stack)
 @Composable
 private fun Realistic3DCardStack(
     video: VideoItem,
@@ -315,7 +338,6 @@ private fun Realistic3DCardStack(
                 onClick = onClick
             )
     ) {
-        // 1. الطبقة الخلفية الأولى (الظلية المضيئة)
         Box(
             modifier = Modifier
                 .fillMaxSize()
@@ -329,7 +351,6 @@ private fun Realistic3DCardStack(
                 .border(1.dp, CyberTheme100.MagentaNeon.copy(alpha = 0.6f), RoundedCornerShape(18.dp))
         )
 
-        // 2. الطبقة الوسطى (الإطار الهيكلي)
         Box(
             modifier = Modifier
                 .fillMaxSize()
@@ -343,7 +364,6 @@ private fun Realistic3DCardStack(
                 .border(1.dp, CyberTheme100.CyanNeon.copy(alpha = 0.5f), RoundedCornerShape(18.dp))
         )
 
-        // 3. الواجهة الأمامية الرئيسية (المجسمة)
         Box(
             modifier = Modifier
                 .fillMaxSize()
@@ -366,7 +386,6 @@ private fun Realistic3DCardStack(
                     modifier = Modifier.fillMaxSize()
                 )
             }
-            // لمعة زجاجية علوية (Glossy Reflection Overlay)
             Box(
                 modifier = Modifier
                     .fillMaxSize()
@@ -418,16 +437,21 @@ private fun CyberSidebar100(
                     horizontalArrangement = Arrangement.spacedBy(8.dp),
                     modifier = Modifier.padding(bottom = 14.dp)
                 ) {
-                    Icon(Icons.Default.PlayCircleFilled, contentDescription = null, tint = CyberTheme100.CyanNeon, modifier = Modifier.size(30.dp))
+                    Icon(
+                        imageVector = Icons.RoundedFilled.PlayCircle,
+                        contentDescription = null,
+                        tint = CyberTheme100.CyanNeon,
+                        modifier = Modifier.size(30.dp)
+                    )
                     Text("mpvRx", color = Color.White, fontSize = 20.sp, fontWeight = FontWeight.Black)
                 }
 
-                SidebarItem100("الرئيسية", Icons.Filled.Home, selected = activeTab == "home") { onTabSelect("home") }
-                SidebarItem100("مكتبة الفيديو", Icons.Outlined.VideoLibrary, selected = activeTab == "library") { onTabSelect("library") }
-                SidebarItem100("المجلدات", Icons.Outlined.Folder, selected = activeTab == "folders") { onTabSelect("folders") }
-                SidebarItem100("قوائم التشغيل", Icons.Outlined.PlaylistPlay, selected = activeTab == "playlists") { onTabSelect("playlists") }
-                SidebarItem100("المفضلة", Icons.Outlined.FavoriteBorder, selected = activeTab == "favorites") { onTabSelect("favorites") }
-                SidebarItem100("الإعدادات", Icons.Outlined.Settings, selected = activeTab == "settings") {
+                SidebarItem100("الرئيسية", Icons.RoundedFilled.Home, selected = activeTab == "home") { onTabSelect("home") }
+                SidebarItem100("مكتبة الفيديو", Icons.RoundedFilled.VideoLibrary, selected = activeTab == "library") { onTabSelect("library") }
+                SidebarItem100("المجلدات", Icons.RoundedFilled.Folder, selected = activeTab == "folders") { onTabSelect("folders") }
+                SidebarItem100("قوائم التشغيل", Icons.RoundedFilled.PlaylistPlay, selected = activeTab == "playlists") { onTabSelect("playlists") }
+                SidebarItem100("المفضلة", Icons.RoundedFilled.FavoriteBorder, selected = activeTab == "favorites") { onTabSelect("favorites") }
+                SidebarItem100("الإعدادات", Icons.RoundedFilled.Settings, selected = activeTab == "settings") {
                     onTabSelect("settings")
                     onSettingsClick()
                 }
@@ -439,7 +463,12 @@ private fun CyberSidebar100(
 }
 
 @Composable
-private fun SidebarItem100(title: String, icon: androidx.compose.ui.graphics.vector.ImageVector, selected: Boolean, onClick: () -> Unit) {
+private fun SidebarItem100(
+    title: String,
+    icon: androidx.compose.ui.graphics.vector.ImageVector,
+    selected: Boolean,
+    onClick: () -> Unit
+) {
     val bgColor by animateColorAsState(if (selected) CyberTheme100.CyanNeon.copy(0.2f) else Color.Transparent, label = "bg")
     Row(
         modifier = Modifier
@@ -447,13 +476,27 @@ private fun SidebarItem100(title: String, icon: androidx.compose.ui.graphics.vec
             .clip(RoundedCornerShape(14.dp))
             .clickable(onClick = onClick)
             .background(bgColor)
-            .border(if (selected) 1.dp else 0.dp, if (selected) CyberTheme100.CyanNeon.copy(0.6f) else Color.Transparent, RoundedCornerShape(14.dp))
+            .border(
+                if (selected) 1.dp else 0.dp,
+                if (selected) CyberTheme100.CyanNeon.copy(0.6f) else Color.Transparent,
+                RoundedCornerShape(14.dp)
+            )
             .padding(horizontal = 12.dp, vertical = 10.dp),
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.spacedBy(12.dp)
     ) {
-        Icon(icon, contentDescription = null, tint = if (selected) CyberTheme100.CyanNeon else CyberTheme100.TextSecondary, modifier = Modifier.size(19.dp))
-        Text(title, color = if (selected) Color.White else CyberTheme100.TextSecondary, fontSize = 12.sp, fontWeight = if (selected) FontWeight.Bold else FontWeight.Normal)
+        Icon(
+            imageVector = icon,
+            contentDescription = null,
+            tint = if (selected) CyberTheme100.CyanNeon else CyberTheme100.TextSecondary,
+            modifier = Modifier.size(19.dp)
+        )
+        Text(
+            title,
+            color = if (selected) Color.White else CyberTheme100.TextSecondary,
+            fontSize = 12.sp,
+            fontWeight = if (selected) FontWeight.Bold else FontWeight.Normal
+        )
     }
 }
 
@@ -469,7 +512,7 @@ private fun StorageGaugeWidget100(storageInfo: StorageInfo) {
     ) {
         Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(10.dp)) {
             Box(contentAlignment = Alignment.Center, modifier = Modifier.size(44.dp)) {
-                androidx.compose.foundation.Canvas(modifier = Modifier.fillMaxSize()) {
+                Canvas(modifier = Modifier.fillMaxSize()) {
                     drawArc(Color.White.copy(0.12f), 0f, 360f, false, style = Stroke(4.5.dp.toPx()))
                     drawArc(
                         brush = Brush.sweepGradient(listOf(CyberTheme100.CyanNeon, CyberTheme100.MagentaNeon, CyberTheme100.CyanNeon)),
@@ -495,17 +538,45 @@ private fun CyberTopBar100(
     onThemeToggleClick: () -> Unit,
     onSettingsClick: () -> Unit
 ) {
-    Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween, verticalAlignment = Alignment.CenterVertically) {
+    Row(
+        modifier = Modifier.fillMaxWidth(),
+        horizontalArrangement = Arrangement.SpaceBetween,
+        verticalAlignment = Alignment.CenterVertically
+    ) {
         Text("المشغل المحلي العالي الأداء", color = CyberTheme100.TextSecondary, fontSize = 11.sp)
         Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-            IconButton(onClick = onSearchClick, modifier = Modifier.size(34.dp).clip(CircleShape).background(CyberTheme100.GlassSurface)) {
-                Icon(Icons.Default.Search, contentDescription = "بحث", tint = Color.White, modifier = Modifier.size(16.dp))
+            IconButton(
+                onClick = onSearchClick,
+                modifier = Modifier.size(34.dp).clip(CircleShape).background(CyberTheme100.GlassSurface)
+            ) {
+                Icon(
+                    imageVector = Icons.RoundedFilled.Search,
+                    contentDescription = "بحث",
+                    tint = Color.White,
+                    modifier = Modifier.size(16.dp)
+                )
             }
-            IconButton(onClick = onThemeToggleClick, modifier = Modifier.size(34.dp).clip(CircleShape).background(CyberTheme100.GlassSurface)) {
-                Icon(Icons.Default.DarkMode, contentDescription = "الثيم", tint = Color.White, modifier = Modifier.size(16.dp))
+            IconButton(
+                onClick = onThemeToggleClick,
+                modifier = Modifier.size(34.dp).clip(CircleShape).background(CyberTheme100.GlassSurface)
+            ) {
+                Icon(
+                    imageVector = Icons.RoundedFilled.Brightness6,
+                    contentDescription = "الثيم",
+                    tint = Color.White,
+                    modifier = Modifier.size(16.dp)
+                )
             }
-            IconButton(onClick = onSettingsClick, modifier = Modifier.size(34.dp).clip(CircleShape).background(CyberTheme100.GlassSurface)) {
-                Icon(Icons.Default.Settings, contentDescription = "الإعدادات", tint = Color.White, modifier = Modifier.size(16.dp))
+            IconButton(
+                onClick = onSettingsClick,
+                modifier = Modifier.size(34.dp).clip(CircleShape).background(CyberTheme100.GlassSurface)
+            ) {
+                Icon(
+                    imageVector = Icons.RoundedFilled.Settings,
+                    contentDescription = "الإعدادات",
+                    tint = Color.White,
+                    modifier = Modifier.size(16.dp)
+                )
             }
         }
     }
@@ -522,8 +593,19 @@ private fun FeaturedHeroCard100(video: VideoItem?, thumbnail: Bitmap?, onPlayCli
             .border(1.5.dp, Brush.horizontalGradient(listOf(CyberTheme100.CyanNeon, CyberTheme100.MagentaNeon)), RoundedCornerShape(24.dp))
             .background(CyberTheme100.GlassSurface)
     ) {
-        thumbnail?.let { Image(bitmap = it.asImageBitmap(), contentDescription = null, contentScale = ContentScale.Crop, modifier = Modifier.fillMaxSize()) }
-        Box(modifier = Modifier.fillMaxSize().background(Brush.horizontalGradient(listOf(Color.Black.copy(0.88f), Color.Transparent))))
+        thumbnail?.let {
+            Image(
+                bitmap = it.asImageBitmap(),
+                contentDescription = null,
+                contentScale = ContentScale.Crop,
+                modifier = Modifier.fillMaxSize()
+            )
+        }
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .background(Brush.horizontalGradient(listOf(Color.Black.copy(0.88f), Color.Transparent)))
+        )
         Column(modifier = Modifier.align(Alignment.BottomStart).padding(18.dp)) {
             Text(video?.title ?: "The Last of Us", color = Color.White, fontSize = 21.sp, fontWeight = FontWeight.Black)
             Spacer(modifier = Modifier.height(10.dp))
@@ -532,10 +614,17 @@ private fun FeaturedHeroCard100(video: VideoItem?, thumbnail: Bitmap?, onPlayCli
                 colors = ButtonDefaults.buttonColors(containerColor = Color.Transparent),
                 contentPadding = PaddingValues(),
                 shape = RoundedCornerShape(14.dp),
-                modifier = Modifier.background(Brush.horizontalGradient(listOf(CyberTheme100.CyanNeon, CyberTheme100.ElectricPurple)), RoundedCornerShape(14.dp))
+                modifier = Modifier.background(
+                    Brush.horizontalGradient(listOf(CyberTheme100.CyanNeon, CyberTheme100.ElectricPurple)),
+                    RoundedCornerShape(14.dp)
+                )
             ) {
                 Row(modifier = Modifier.padding(horizontal = 20.dp, vertical = 9.dp), verticalAlignment = Alignment.CenterVertically) {
-                    Icon(Icons.Default.PlayArrow, contentDescription = null, tint = Color.White)
+                    Icon(
+                        imageVector = Icons.RoundedFilled.PlayArrow,
+                        contentDescription = null,
+                        tint = Color.White
+                    )
                     Text("تشغيل الآن", color = Color.White, fontWeight = FontWeight.Bold, fontSize = 12.sp)
                 }
             }
@@ -590,7 +679,12 @@ private fun FolderCardsRow100(folders: List<FolderInfo>, onFolderClick: (FolderI
                     .padding(12.dp)
             ) {
                 Column(modifier = Modifier.fillMaxSize(), verticalArrangement = Arrangement.SpaceBetween) {
-                    Icon(Icons.Default.Folder, contentDescription = null, tint = CyberTheme100.CyanNeon, modifier = Modifier.size(22.dp))
+                    Icon(
+                        imageVector = Icons.RoundedFilled.Folder,
+                        contentDescription = null,
+                        tint = CyberTheme100.CyanNeon,
+                        modifier = Modifier.size(22.dp)
+                    )
                     Column {
                         Text(folder.name, color = Color.White, fontSize = 11.sp, fontWeight = FontWeight.Bold)
                         Text("${folder.count} عنصر", color = CyberTheme100.TextSecondary, fontSize = 8.5.sp)
@@ -615,7 +709,12 @@ private fun ResumePlaybackWidget100(video: VideoItem?, progress: Float, onClick:
         Column {
             Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
                 Text("استئناف التشغيل", color = Color.White, fontSize = 11.sp, fontWeight = FontWeight.Bold)
-                Icon(Icons.Default.PlayCircle, contentDescription = null, tint = CyberTheme100.CyanNeon, modifier = Modifier.size(17.dp))
+                Icon(
+                    imageVector = Icons.RoundedFilled.PlayCircle,
+                    contentDescription = null,
+                    tint = CyberTheme100.CyanNeon,
+                    modifier = Modifier.size(17.dp)
+                )
             }
             Spacer(modifier = Modifier.height(10.dp))
             LinearProgressIndicator(
@@ -629,7 +728,12 @@ private fun ResumePlaybackWidget100(video: VideoItem?, progress: Float, onClick:
 }
 
 @Composable
-private fun RecentFilesWidget100(videos: List<VideoItem>, getThumbnail: (VideoItem) -> Bitmap?, onVideoClick: (VideoItem) -> Unit, modifier: Modifier = Modifier) {
+private fun RecentFilesWidget100(
+    videos: List<VideoItem>,
+    getThumbnail: (VideoItem) -> Bitmap?,
+    onVideoClick: (VideoItem) -> Unit,
+    modifier: Modifier = Modifier
+) {
     Box(
         modifier = modifier
             .fillMaxWidth()
@@ -652,11 +756,28 @@ private fun RecentFilesWidget100(videos: List<VideoItem>, getThumbnail: (VideoIt
                         verticalAlignment = Alignment.CenterVertically,
                         horizontalArrangement = Arrangement.spacedBy(10.dp)
                     ) {
-                        Box(modifier = Modifier.size(36.dp).clip(RoundedCornerShape(8.dp)).background(Color.Black)) {
-                            getThumbnail(video)?.let { Image(bitmap = it.asImageBitmap(), contentDescription = null, contentScale = ContentScale.Crop) }
+                        Box(
+                            modifier = Modifier
+                                .size(36.dp)
+                                .clip(RoundedCornerShape(8.dp))
+                                .background(Color.Black)
+                        ) {
+                            getThumbnail(video)?.let {
+                                Image(
+                                    bitmap = it.asImageBitmap(),
+                                    contentDescription = null,
+                                    contentScale = ContentScale.Crop
+                                )
+                            }
                         }
                         Column(modifier = Modifier.weight(1f)) {
-                            Text(video.title, color = Color.White, fontSize = 10.5.sp, maxLines = 1, overflow = TextOverflow.Ellipsis)
+                            Text(
+                                video.title,
+                                color = Color.White,
+                                fontSize = 10.5.sp,
+                                maxLines = 1,
+                                overflow = TextOverflow.Ellipsis
+                            )
                             Text(video.durationFormatted, color = CyberTheme100.TextSecondary, fontSize = 8.5.sp)
                         }
                     }
@@ -682,24 +803,48 @@ private fun CyberBottomDock100(
             .background(CyberTheme100.GlassSurface),
         contentAlignment = Alignment.Center
     ) {
-        Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceEvenly, verticalAlignment = Alignment.CenterVertically) {
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.SpaceEvenly,
+            verticalAlignment = Alignment.CenterVertically
+        ) {
             IconButton(onClick = { onTabSelect("home") }) {
-                Icon(Icons.Default.Home, contentDescription = "الرئيسية", tint = if (activeTab == "home") CyberTheme100.CyanNeon else Color.White.copy(0.6f))
+                Icon(
+                    imageVector = Icons.RoundedFilled.Home,
+                    contentDescription = "الرئيسية",
+                    tint = if (activeTab == "home") CyberTheme100.CyanNeon else Color.White.copy(0.6f)
+                )
             }
             IconButton(onClick = { onTabSelect("library") }) {
-                Icon(Icons.Outlined.VideoLibrary, contentDescription = "المكتبة", tint = if (activeTab == "library") CyberTheme100.CyanNeon else Color.White.copy(0.6f))
+                Icon(
+                    imageVector = Icons.RoundedFilled.VideoLibrary,
+                    contentDescription = "المكتبة",
+                    tint = if (activeTab == "library") CyberTheme100.CyanNeon else Color.White.copy(0.6f)
+                )
             }
             IconButton(onClick = { onTabSelect("favorites") }) {
-                Icon(Icons.Outlined.FavoriteBorder, contentDescription = "المفضلة", tint = if (activeTab == "favorites") CyberTheme100.CyanNeon else Color.White.copy(0.6f))
+                Icon(
+                    imageVector = Icons.RoundedFilled.FavoriteBorder,
+                    contentDescription = "المفضلة",
+                    tint = if (activeTab == "favorites") CyberTheme100.CyanNeon else Color.White.copy(0.6f)
+                )
             }
             IconButton(onClick = { onTabSelect("music") }) {
-                Icon(Icons.Outlined.MusicNote, contentDescription = "موسيقى", tint = if (activeTab == "music") CyberTheme100.CyanNeon else Color.White.copy(0.6f))
+                Icon(
+                    imageVector = Icons.RoundedFilled.Audiotrack,
+                    contentDescription = "موسيقى",
+                    tint = if (activeTab == "music") CyberTheme100.CyanNeon else Color.White.copy(0.6f)
+                )
             }
             IconButton(onClick = {
                 onTabSelect("settings")
                 onSettingsClick()
             }) {
-                Icon(Icons.Outlined.Settings, contentDescription = "الإعدادات", tint = if (activeTab == "settings") CyberTheme100.CyanNeon else Color.White.copy(0.6f))
+                Icon(
+                    imageVector = Icons.RoundedFilled.Settings,
+                    contentDescription = "الإعدادات",
+                    tint = if (activeTab == "settings") CyberTheme100.CyanNeon else Color.White.copy(0.6f)
+                )
             }
         }
     }

@@ -260,9 +260,6 @@ class ThumbnailRepository(
       check(networkDiskDir.mkdirs() || networkDiskDir.isDirectory) {
         "Unable to recreate thumbnail cache directory: ${networkDiskDir.absolutePath}"
       }
-      // NetworkImageRepository owns this directory but is a Koin singleton, so its mkdirs() only
-      // ever ran once at construction. Recreate it here or every network image load silently fails
-      // until the process restarts.
       File(context.cacheDir, "network_images").mkdirs()
     }
   }
@@ -321,7 +318,6 @@ class ThumbnailRepository(
         existingState.signature != signature ||
         (existingJob?.isActive != true && state.nextIndex < filteredVideos.size)
 
-    // Keep an active matching batch, but resume one that was cancelled before completing.
     if (shouldRestart) {
       folderJobs.remove(folderId)?.cancel()
       folderJobs[folderId] =
@@ -359,10 +355,6 @@ class ThumbnailRepository(
       resolvedThumbnailKeys.put(peekIdentity(video, width, height), key)
     }
 
-  /**
-   * Non-blocking peek for composition. Building a key can hit the filesystem or MediaStore, so this
-   * only answers once [thumbnailKey] has run on a worker thread and returns null otherwise.
-   */
   fun peekThumbnailFromMemory(
     video: Video,
     widthPx: Int,
@@ -382,11 +374,6 @@ class ThumbnailRepository(
     "${video.path}|${video.uri}|${video.size}|${video.dateModified}|${video.duration}" +
       "|$widthPx|$heightPx|${thumbnailModeKey()}|${thumbnailQualityKey()}"
 
-  /**
-   * Folder prefetch and a visible card may request different sizes for the same source.
-   * The disk entry is size-independent, so either completion can wake the card and let it
-   * decode the cached bitmap at its own target dimensions.
-   */
   fun isThumbnailKeyForVideo(
     key: String,
     video: Video,
@@ -394,8 +381,6 @@ class ThumbnailRepository(
     key.startsWith("${videoBaseKey(video)}|") &&
       key.endsWith("|${thumbnailModeKey()}|${thumbnailQualityKey()}")
 
-  // Keep extraction-quality changes from reusing smaller legacy images that were
-  // cached without their requested dimensions in the key.
   fun diskCacheKey(video: Video): String =
     "video-thumb-v2|${diskVideoBaseKey(video)}|${thumbnailModeKey()}|${thumbnailQualityKey()}"
 
@@ -448,7 +433,6 @@ class ThumbnailRepository(
       if (dateModified <= 0L) dateModified = file.lastModified() / 1000L
     }
 
-    // Query MediaStore which is indexed by Android
     runCatching {
       val projection =
         arrayOf(
@@ -512,7 +496,6 @@ class ThumbnailRepository(
     return "$source|${meta.size}|${meta.dateModified}|${meta.duration}"
   }
 
-  /** Sidecar artwork probing is disk I/O, so keep it out of keys evaluated during composition. */
   private fun diskVideoBaseKey(video: Video): String {
     val baseKey = videoBaseKey(video)
     if (isNetworkUrl(video.path)) return baseKey
@@ -767,7 +750,6 @@ class ThumbnailRepository(
       try {
         Bitmap.createScaledBitmap(bitmap, scaledWidth, scaledHeight, true)
       } catch (_: IllegalArgumentException) {
-        // Bitmap was recycled between the check and the scale call
         return bitmap
       }
     if (scaled != bitmap && !bitmap.isRecycled) {
@@ -1008,18 +990,10 @@ class ThumbnailRepository(
 
   private fun networkVideoHeaders(): Map<String, String> =
     mapOf(
-      // Some servers refuse requests without a UA. MediaMetadataRetriever handles the rest.
       "User-Agent" to "Mozilla/5.0 (Android) mpvRx",
       "Accept" to "*/*",
     )
 
-  /**
-   * Retrieve a thumbnail for a raw network file path (for use from [NetworkVideoCard]).
-   * For HTTP/HTTPS URLs, uses [MediaMetadataRetriever]'s built-in HTTP streaming.
-   * For other protocols (SMB, FTP, WebDAV), uses [NetworkStreamingProxy] to create
-   * a local HTTP stream and then extracts the frame.
-   * Respects the [showNetworkThumbnails] preference gate.
-   */
   suspend fun getThumbnailForNetworkPath(
     path: String,
     widthPx: Int,
@@ -1107,8 +1081,6 @@ class ThumbnailRepository(
     widthPx: Int,
     heightPx: Int,
   ): Bitmap? {
-    // Tombstones included: the cache key needs only this connection's identity, and an entry whose
-    // share was deleted must keep showing the frame that is already on disk.
     val connection = networkRepository.getConnectionIncludingDeleted(connectionId) ?: return null
     return getThumbnailForNetworkPath(
       path = path,
@@ -1135,10 +1107,8 @@ class ThumbnailRepository(
     val memKey = networkThumbnailMemoryKey(identity, widthPx, heightPx)
     val diskKey = networkThumbnailDiskKey(identity)
 
-    // Memory cache hit
     synchronized(memoryCache) { memoryCache.get(memKey) }?.let { return it }
 
-    // Disk cache hit
     readBitmapFromDisk(diskKey, network = true)?.let { bitmap ->
       val scaled = scaleBitmap(bitmap, widthPx, heightPx)
       synchronized(memoryCache) { memoryCache.put(memKey, scaled) }
@@ -1177,7 +1147,6 @@ class ThumbnailRepository(
 
     networkThumbnailFailedAt.remove(identity)
 
-    // Write to disk cache
     writeBitmapToDisk(diskKey, bitmap, network = true)
 
     synchronized(memoryCache) { memoryCache.put(memKey, bitmap) }
@@ -1222,7 +1191,6 @@ class ThumbnailRepository(
     }
   }
 
-  /** The memory-cache key used by [getThumbnailForNetworkPath]. */
   fun thumbnailKeyForNetworkPath(
     path: String,
     widthPx: Int,
@@ -1235,14 +1203,6 @@ class ThumbnailRepository(
       heightPx,
     )
 
-  /**
-   * Cache identity for a network thumbnail: the share endpoint plus the path, nothing else.
-   *
-   * Size and modification time are deliberately excluded. A playlist entry knows neither, so
-   * folding them in gave one file two different cache entries — one per screen showing it — and
-   * made the second screen download and extract the frame again. The trade-off is that replacing
-   * a file in place keeps serving the previous thumbnail until the cache is cleared.
-   */
   private fun networkThumbnailIdentity(
     path: String,
     connection: NetworkConnection?,
@@ -1270,10 +1230,6 @@ class ThumbnailRepository(
     return false
   }
 
-  /**
-   * Get a thumbnail for a folder using the first video in the folder.
-   * Returns null if the folder has no videos or thumbnail generation fails.
-   */
   suspend fun getFolderThumbnail(
     folderId: String,
     videos: List<Video>,
@@ -1283,7 +1239,6 @@ class ThumbnailRepository(
     withContext(Dispatchers.IO) {
       if (videos.isEmpty()) return@withContext null
 
-      // Filter out network videos if network thumbnails are disabled
       val filteredVideos =
         if (appearancePreferences.showNetworkThumbnails.get()) {
           videos
@@ -1293,7 +1248,6 @@ class ThumbnailRepository(
 
       if (filteredVideos.isEmpty()) return@withContext null
 
-      // Use the first video as the folder thumbnail
       getThumbnail(filteredVideos.first(), widthPx, heightPx)
     }
 

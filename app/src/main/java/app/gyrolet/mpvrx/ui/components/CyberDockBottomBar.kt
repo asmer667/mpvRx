@@ -1,17 +1,20 @@
-package app.gyrolet.mpvrx.ui.components // عدل اسم الـ package ليطابق مشروعك إذا كان مختلفاً
+package app.gyrolet.mpvrx.ui.components
 
 import androidx.compose.animation.animateColorAsState
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Folder
-import androidx.compose.material.icons.filled.Home
-import androidx.compose.material.icons.filled.Settings
-import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -25,6 +28,8 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import app.gyrolet.mpvrx.ui.icons.Icon
+import app.gyrolet.mpvrx.ui.icons.Icons
 import app.gyrolet.mpvrx.ui.theme.Cyber3DColors
 
 enum class CyberTab { HOME, FOLDERS, SETTINGS }
@@ -59,19 +64,19 @@ fun CyberDockBottomBar(
             verticalAlignment = Alignment.CenterVertically
         ) {
             DockItem(
-                icon = Icons.Default.Home,
+                icon = Icons.RoundedFilled.Home,
                 label = "الرئيسية",
                 isSelected = selectedTab == CyberTab.HOME,
                 onClick = { onTabSelected(CyberTab.HOME) }
             )
             DockItem(
-                icon = Icons.Default.Folder,
+                icon = Icons.RoundedFilled.Folder,
                 label = "المجلدات",
                 isSelected = selectedTab == CyberTab.FOLDERS,
                 onClick = { onTabSelected(CyberTab.FOLDERS) }
             )
             DockItem(
-                icon = Icons.Default.Settings,
+                icon = Icons.RoundedFilled.Settings,
                 label = "الإعدادات",
                 isSelected = selectedTab == CyberTab.SETTINGS,
                 onClick = { onTabSelected(CyberTab.SETTINGS) }

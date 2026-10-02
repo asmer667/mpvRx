@@ -1,11 +1,15 @@
-package app.gyrolet.mpvrx.ui.components // عدل اسم الـ package ليطابق مشروعك إذا كان مختلفاً
+package app.gyrolet.mpvrx.ui.components
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.VideoLibrary
-import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -17,6 +21,8 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import app.gyrolet.mpvrx.ui.icons.Icon
+import app.gyrolet.mpvrx.ui.icons.Icons
 import app.gyrolet.mpvrx.ui.theme.Cyber3DColors
 
 @Composable
@@ -32,7 +38,6 @@ fun CyberEmptyState(
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center
     ) {
-        // دائرة توهج ثلاثية الأبعاد مع أيقونة الميديا
         Box(
             modifier = Modifier
                 .size(90.dp)
@@ -48,7 +53,7 @@ fun CyberEmptyState(
             contentAlignment = Alignment.Center
         ) {
             Icon(
-                imageVector = Icons.Default.VideoLibrary,
+                imageVector = Icons.RoundedFilled.VideoLibrary,
                 contentDescription = null,
                 tint = Cyber3DColors.CyanNeon,
                 modifier = Modifier.size(44.dp)

@@ -1,14 +1,17 @@
-package app.gyrolet.mpvrx.ui.components // عدل اسم الـ package ليطابق مشروعك إذا كان مختلفاً
+package app.gyrolet.mpvrx.ui.components
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.GridView
-import androidx.compose.material.icons.filled.List
-import androidx.compose.material.icons.filled.Search
-import androidx.compose.material3.*
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -17,6 +20,8 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import app.gyrolet.mpvrx.ui.icons.Icon
+import app.gyrolet.mpvrx.ui.icons.Icons
 import app.gyrolet.mpvrx.ui.theme.Cyber3DColors
 
 @Composable
@@ -45,7 +50,6 @@ fun CyberTopAppBar(
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
-            // العنوان العريض بطابع مستقبلي
             Text(
                 text = title.uppercase(),
                 style = MaterialTheme.typography.titleLarge.copy(
@@ -57,7 +61,6 @@ fun CyberTopAppBar(
             )
 
             Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                // زر البحث الـ 3D
                 IconButton(
                     onClick = onSearchClick,
                     modifier = Modifier
@@ -66,13 +69,12 @@ fun CyberTopAppBar(
                         .background(Color.White.copy(alpha = 0.08f))
                 ) {
                     Icon(
-                        imageVector = Icons.Default.Search,
+                        imageVector = Icons.RoundedFilled.Search,
                         contentDescription = "Search",
                         tint = Cyber3DColors.CyanNeon
                     )
                 }
 
-                // زر تبديل العرض (Grid / List)
                 IconButton(
                     onClick = onToggleViewMode,
                     modifier = Modifier
@@ -81,7 +83,7 @@ fun CyberTopAppBar(
                         .background(Color.White.copy(alpha = 0.08f))
                 ) {
                     Icon(
-                        imageVector = if (isGridMode) Icons.Default.List else Icons.Default.GridView,
+                        imageVector = if (isGridMode) Icons.RoundedFilled.ListAlt else Icons.RoundedFilled.GridView,
                         contentDescription = "Toggle View",
                         tint = Cyber3DColors.MagentaNeon
                     )

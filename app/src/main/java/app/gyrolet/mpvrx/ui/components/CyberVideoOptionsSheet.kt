@@ -9,12 +9,6 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Delete
-import androidx.compose.material.icons.filled.Info
-import androidx.compose.material.icons.filled.PlayArrow
-import androidx.compose.material.icons.filled.Share
-import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -25,6 +19,8 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import app.gyrolet.mpvrx.ui.icons.Icon
+import app.gyrolet.mpvrx.ui.icons.Icons
 import app.gyrolet.mpvrx.ui.theme.Cyber3DColors
 
 @Composable
@@ -52,28 +48,28 @@ fun CyberVideoOptionsSheet(
         Spacer(modifier = Modifier.height(8.dp))
 
         OptionItem3D(
-            icon = Icons.Default.PlayArrow,
+            icon = Icons.RoundedFilled.PlayArrow,
             title = "تشغيل الفيديو",
             accentColor = Cyber3DColors.CyanNeon,
             onClick = onPlayClick,
         )
 
         OptionItem3D(
-            icon = Icons.Default.Share,
+            icon = Icons.RoundedFilled.Share,
             title = "مشاركة الملف",
             accentColor = Color.White,
             onClick = onShareClick,
         )
 
         OptionItem3D(
-            icon = Icons.Default.Info,
+            icon = Icons.RoundedFilled.Info,
             title = "تفاصيل وتنسيق الفيديو",
             accentColor = Cyber3DColors.YellowCyber,
             onClick = onInfoClick,
         )
 
         OptionItem3D(
-            icon = Icons.Default.Delete,
+            icon = Icons.RoundedFilled.Delete,
             title = "حذف الفيديو",
             accentColor = Cyber3DColors.MagentaNeon,
             onClick = onDeleteClick,
