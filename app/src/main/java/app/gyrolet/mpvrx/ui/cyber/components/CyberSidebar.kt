@@ -32,7 +32,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.vector.ImageVector
+import app.gyrolet.mpvrx.ui.icons.AppIcon
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -43,7 +43,7 @@ import app.gyrolet.mpvrx.ui.icons.Icons
 data class CyberSidebarItem(
     val id: String,
     val title: String,
-    val icon: ImageVector,
+    val icon: AppIcon,
 )
 
 /**

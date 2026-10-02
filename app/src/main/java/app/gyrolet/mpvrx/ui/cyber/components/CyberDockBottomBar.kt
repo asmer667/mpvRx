@@ -37,7 +37,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.NativePaint
 import androidx.compose.ui.graphics.drawscope.drawIntoCanvas
 import androidx.compose.ui.graphics.toArgb
-import androidx.compose.ui.graphics.vector.ImageVector
+import app.gyrolet.mpvrx.ui.icons.AppIcon
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -48,7 +48,7 @@ import app.gyrolet.mpvrx.ui.icons.Icons
 data class CyberDockItem(
     val id: String,
     val label: String,
-    val icon: ImageVector,
+    val icon: AppIcon,
 )
 
 /**
