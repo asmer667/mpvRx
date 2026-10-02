@@ -63,7 +63,7 @@ fun CyberSidebar(
             .padding(8.dp)
             .clip(RoundedCornerShape(26.dp))
             .background(Cyber3DColors.GlassSurface)
-            .border(1.dp, Cyber3DColors.GlassBorderGlow, RoundedCornerShape(26.dp))
+            .border(1.dp, Cyber3DColors.DarkGlassBorder, RoundedCornerShape(26.dp))
             .padding(14.dp),
     ) {
         Column(

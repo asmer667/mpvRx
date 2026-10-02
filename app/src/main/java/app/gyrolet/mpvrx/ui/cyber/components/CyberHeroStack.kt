@@ -206,7 +206,7 @@ private fun CyberStackCard(
                 this.scaleX = scale
                 this.scaleY = scale
                 this.alpha = alpha
-                this.zIndex = zIndex
+
                 cameraDistance = 12f * density
             }
             .stackCardGlow(rotationZ)

@@ -68,7 +68,7 @@ fun CyberDockBottomBar(
             .height(60.dp)
             .cyberDockGlow()
             .clip(RoundedCornerShape(30.dp))
-            .background(Cyber3DColors.GlassSurfaceStrong)
+            .background(Cyber3DColors.DarkGlassSurface)
             .border(
                 width = 1.dp,
                 brush = Brush.horizontalGradient(
