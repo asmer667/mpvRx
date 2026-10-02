@@ -56,7 +56,7 @@ fun CyberSidebar(
     onItemClick: (String) -> Unit,
     modifier: Modifier = Modifier,
     headerTitle: String = "mpvRx",
-    headerIcon: ImageVector = Icons.RoundedFilled.PlayCircle,
+    headerIcon: AppIcon = Icons.RoundedFilled.PlayCircle,
 ) {
     Box(
         modifier = modifier
