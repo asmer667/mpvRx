@@ -1249,19 +1249,19 @@ class ThumbnailRepository(
   ): String {
     val endpoint =
       connection?.let {
-        "${it.id}\vert{}${it.protocol.name}|${it.host.lowercase()}\vert{}${it.port}|${it.path}\vert{}${it.useHttps}"
+        "${it.id}|${it.protocol.name}|${it.host.lowercase()}|${it.port}|${it.path}|${it.useHttps}"
       } ?: "direct"
-    return "$endpoint\vert{}$path"
+    return "$endpoint|$path"
   }
 
   private fun networkThumbnailMemoryKey(
     identity: String,
     widthPx: Int,
     heightPx: Int,
-  ): String = "$identity|network|$widthPx\vert{}$heightPx|${thumbnailModeKey()}\vert{}${thumbnailQualityKey()}"
+  ): String = "$identity|network|$widthPx|$heightPx|${thumbnailModeKey()}|${thumbnailQualityKey()}"
 
   private fun networkThumbnailDiskKey(identity: String): String =
-    "video-thumb-v3|$identity|network|${thumbnailModeKey()}\vert{}${thumbnailQualityKey()}"
+    "video-thumb-v3|$identity|network|${thumbnailModeKey()}|${thumbnailQualityKey()}"
 
   private fun hasRecentNetworkThumbnailFailure(identity: String): Boolean {
     val failedAt = networkThumbnailFailedAt[identity] ?: return false
@@ -1303,7 +1303,7 @@ class ThumbnailRepository(
     heightPx: Int,
   ): String {
     val md = MessageDigest.getInstance("MD5")
-    md.update("$widthPx\vert{}$heightPx|${thumbnailModeKey()}\vert{}${thumbnailQualityKey()}|".toByteArray())
+    md.update("$widthPx|$heightPx|${thumbnailModeKey()}|${thumbnailQualityKey()}|".toByteArray())
     for (video in videos) {
       md.update(video.path.toByteArray())
       md.update("|".toByteArray())
