@@ -3,7 +3,11 @@ package app.gyrolet.mpvrx.ui.theme
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 
-object Cyber3DColors {
+/**
+ * لوحة ألوان إضافية جديدة (Cyber3DColorsExtra)
+ * لا تتعارض مع Cyber3DColors الموجود في CyberTheme.kt
+ */
+object Cyber3DColorsExtra {
     // الألوان النيونية الأساسية
     val CyanNeon = Color(0xFF00E5FF)
     val MagentaNeon = Color(0xFFFF00AA)
